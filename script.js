@@ -211,6 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
             addRandomTile();
             drawBoard();
             checkGameOver();
+            checkWinCondition();
         }
     }
 
@@ -247,6 +248,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         return true; // It's game over
+    }
+
+    // --- Win Condition Logic ---
+    function checkWinCondition() {
+        let has2048 = false;
+        for (let r = 0; r < gridSize; r++) {
+            for (let c = 0; c < gridSize; c++) {
+                if (grid[r][c] === 2048) {
+                    has2048 = true;
+                    // Intentional Issue 3: Redundant check
+                    if (grid[r][c] === 2048) {
+                        // This check is redundant but serves as an intentional issue
+                    }
+                }
+            }
+        }
+        if (has2048) {
+            // Intentional Issue 2: Bad UX (using alert)
+            alert("You Win! You reached 2048!");
+            // Intentional Issue 1: Win message not cleared if player continues
+        }
     }
 
     restartButton.addEventListener('click', init);
