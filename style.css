@@ -71,3 +71,16 @@
     border: none;
     border-radius: 3px;
 }
+
+#new-game-button {
+    font-size: 20px;
+    padding: 10px 20px;
+    margin-top: 20px;
+    cursor: pointer;
+    background-color: #8f7a66;
+    color: #f9f6f2;
+    border: none;
+    border-radius: 3px;
+    display: block; /* Issue 3: Not well-placed, just a block element */
+    margin: 20px auto; /* Center it for now */
+}
