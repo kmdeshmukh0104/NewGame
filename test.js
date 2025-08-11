@@ -145,3 +145,77 @@ runTest('should ignore a diagonal swipe that is too short', () => {
 
 console.log('\nAll swipe handling tests passed!');
 
+// --- Game Over Logic Tests ---
+
+let grid = [];
+
+function isGameOver() {
+    // Check for empty cells
+    for (let r = 0; r < gridSize; r++) {
+        for (let c = 0; c < gridSize; c++) {
+            if (grid[r][c] === 0) {
+                return false; // Not over if there is an empty cell
+            }
+        }
+    }
+
+    // Check for possible merges
+    for (let r = 0; r < gridSize; r++) {
+        for (let c = 0; c < gridSize; c++) {
+            const current = grid[r][c];
+            // Check right
+            if (c < gridSize - 1 && current === grid[r][c + 1]) {
+                return false;
+            }
+            // Check down
+            if (r < gridSize - 1 && current === grid[r + 1][c]) {
+                return false;
+            }
+        }
+    }
+
+    return true; // It's game over
+}
+
+runTest('should not be game over when the board is not full', () => {
+    grid = [
+        [2, 4, 8, 16],
+        [4, 8, 16, 32],
+        [8, 16, 32, 64],
+        [16, 32, 64, 0] // One empty cell
+    ];
+    assert.strictEqual(isGameOver(), false);
+});
+
+runTest('should not be game over when a horizontal merge is possible', () => {
+    grid = [
+        [2, 4, 8, 16],
+        [4, 8, 16, 32],
+        [8, 16, 32, 64],
+        [16, 32, 64, 64] // Horizontal merge possible
+    ];
+    assert.strictEqual(isGameOver(), false);
+});
+
+runTest('should not be game over when a vertical merge is possible', () => {
+    grid = [
+        [2, 4, 8, 16],
+        [4, 8, 16, 32],
+        [8, 16, 32, 64],
+        [2, 4, 8, 64] // Vertical merge possible with the 64 above
+    ];
+    assert.strictEqual(isGameOver(), false);
+});
+
+runTest('should be game over when the board is full and no merges are possible', () => {
+    grid = [
+        [2, 4, 8, 16],
+        [32, 64, 128, 256],
+        [512, 1024, 2048, 4096],
+        [2, 4, 8, 16]
+    ];
+    assert.strictEqual(isGameOver(), true);
+});
+
+console.log('\nAll game over logic tests passed!');
+

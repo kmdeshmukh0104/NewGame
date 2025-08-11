@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     const gameBoard = document.getElementById('game-board');
     const scoreElement = document.getElementById('current-score');
+    const gameOverOverlay = document.getElementById('game-over-overlay');
+    const restartButton = document.getElementById('restart-button');
     const gridSize = 4;
     let grid = [];
     let score = 0;
@@ -10,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
         grid = Array(gridSize).fill(null).map(() => Array(gridSize).fill(0));
         score = 0;
         updateScore();
+        gameOverOverlay.classList.remove('visible');
         addRandomTile();
         addRandomTile();
         drawBoard();
@@ -73,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (moved) {
             addRandomTile();
             drawBoard();
-            // Check for game over
+            checkGameOver();
         }
     }
 
@@ -207,10 +210,46 @@ document.addEventListener('DOMContentLoaded', () => {
         if (moved) {
             addRandomTile();
             drawBoard();
-            // Check for game over
+            checkGameOver();
         }
     }
 
+    // --- Game Over Logic ---
+    function checkGameOver() {
+        if (isGameOver()) {
+            gameOverOverlay.classList.add('visible');
+        }
+    }
+
+    function isGameOver() {
+        // Check for empty cells
+        for (let r = 0; r < gridSize; r++) {
+            for (let c = 0; c < gridSize; c++) {
+                if (grid[r][c] === 0) {
+                    return false; // Not over if there is an empty cell
+                }
+            }
+        }
+
+        // Check for possible merges
+        for (let r = 0; r < gridSize; r++) {
+            for (let c = 0; c < gridSize; c++) {
+                const current = grid[r][c];
+                // Check right
+                if (c < gridSize - 1 && current === grid[r][c + 1]) {
+                    return false;
+                }
+                // Check down
+                if (r < gridSize - 1 && current === grid[r + 1][c]) {
+                    return false;
+                }
+            }
+        }
+
+        return true; // It's game over
+    }
+
+    restartButton.addEventListener('click', init);
     document.addEventListener('keydown', handleInput);
     init();
 });
