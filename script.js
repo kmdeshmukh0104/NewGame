@@ -162,6 +162,55 @@ document.addEventListener('DOMContentLoaded', () => {
         scoreElement.textContent = score;
     }
 
+    // --- Touch Input Handling ---
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchEndX = 0;
+    let touchEndY = 0;
+
+    gameBoard.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+        touchStartY = e.changedTouches[0].screenY;
+    });
+
+    gameBoard.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        touchEndY = e.changedTouches[0].screenY;
+        handleSwipe();
+    });
+
+    function handleSwipe() {
+        const deltaX = touchEndX - touchStartX;
+        const deltaY = touchEndY - touchStartY;
+        const swipeThreshold = 50; // Minimum distance for a swipe
+
+        let moved = false;
+
+        if (Math.abs(deltaX) > Math.abs(deltaY)) { // Horizontal swipe
+            if (Math.abs(deltaX) > swipeThreshold) {
+                if (deltaX > 0) {
+                    moved = moveRight();
+                } else {
+                    moved = moveLeft();
+                }
+            }
+        } else { // Vertical swipe
+            if (Math.abs(deltaY) > swipeThreshold) {
+                if (deltaY > 0) {
+                    moved = moveDown();
+                } else {
+                    moved = moveUp();
+                }
+            }
+        }
+
+        if (moved) {
+            addRandomTile();
+            drawBoard();
+            // Check for game over
+        }
+    }
+
     document.addEventListener('keydown', handleInput);
     init();
 });
