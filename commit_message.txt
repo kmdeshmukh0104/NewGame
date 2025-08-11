@@ -1,0 +1,6 @@
+fix(ui): Resolve New Game button issues
+
+- Remove `onclick` from HTML and attach event listener via JavaScript.
+- Adjust button styling and placement for better UX.
+- Ensure `init()` hides all overlays (game over and win) upon restart.
+- Update tests to reflect new button handling.

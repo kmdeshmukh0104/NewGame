@@ -284,15 +284,15 @@ function init() {
 
 // Mock DOM elements
 const newGameButton = {
-    onclick: null,
+    _clickCallback: null,
     addEventListener: (event, callback) => {
         if (event === 'click') {
-            newGameButton.onclick = callback;
+            newGameButton._clickCallback = callback;
         }
     },
-    click: () => {
-        if (newGameButton.onclick) {
-            newGameButton.onclick();
+    triggerClick: () => { // Simulate a click
+        if (newGameButton._clickCallback) {
+            newGameButton._clickCallback();
         }
     }
 };
@@ -304,25 +304,25 @@ const gameOverOverlay = {
     },
 };
 
-runTest('New Game button should call init function', () => {
+runTest('New Game button should call init function when clicked', () => {
     initCalled = false;
-    // Simulate button click (assuming onclick is set in HTML)
-    // For testing, we directly call init() as if the button was clicked
-    init();
+    newGameButton.addEventListener('click', init); // Simulate script.js adding listener
+    newGameButton.triggerClick();
     assert.strictEqual(initCalled, true);
 });
 
-runTest('New Game button should hide win overlay', () => {
+runTest('New Game button should hide win overlay when clicked', () => {
     winOverlay.classList.add('visible'); // Make it visible for test
-    init();
+    newGameButton.addEventListener('click', init); // Simulate script.js adding listener
+    newGameButton.triggerClick();
     // In a real scenario, we'd check if winOverlay.classList.contains('visible') is false
     // For this mock, we assume remove() works as expected.
-    // The init() function in script.js handles this.
 });
 
-runTest('New Game button should hide game over overlay', () => {
+runTest('New Game button should hide game over overlay when clicked', () => {
     gameOverOverlay.classList.add('visible'); // Make it visible for test
-    init();
+    newGameButton.addEventListener('click', init); // Simulate script.js adding listener
+    newGameButton.triggerClick();
     // Similar to winOverlay, we assume remove() works as expected.
 });
 

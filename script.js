@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const restartButton = document.getElementById('restart-button');
     const winOverlay = document.getElementById('win-overlay');
     const continueButton = document.getElementById('continue-button');
+    const newGameButton = document.getElementById('new-game-button');
     const gridSize = 4;
     let grid = [];
     let score = 0;
@@ -274,6 +275,7 @@ document.addEventListener('DOMContentLoaded', () => {
     continueButton.addEventListener('click', () => {
         winOverlay.classList.remove('visible');
     });
+    newGameButton.addEventListener('click', init);
     document.addEventListener('keydown', handleInput);
     init();
 });
