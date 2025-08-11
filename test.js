@@ -221,32 +221,27 @@ console.log('\nAll game over logic tests passed!');
 
 // --- Win Condition Logic Tests ---
 
-// Mock window.alert
-let alertCalled = false;
-let alertMessage = '';
-const originalAlert = global.alert;
-global.alert = (message) => {
-    alertCalled = true;
-    alertMessage = message;
+let hasWon = false;
+
+// Mock winOverlay for testing
+const winOverlay = {
+    classList: {
+        add: () => {},
+        remove: () => {},
+    },
 };
 
 function checkWinCondition() {
-    let has2048 = false;
+    if (hasWon) return; // Don't check again if already won
+
     for (let r = 0; r < gridSize; r++) {
         for (let c = 0; c < gridSize; c++) {
             if (grid[r][c] === 2048) {
-                has2048 = true;
-                // Intentional Issue 3: Redundant check
-                if (grid[r][c] === 2048) {
-                    // This check is redundant but serves as an intentional issue
-                }
+                hasWon = true;
+                winOverlay.classList.add('visible');
+                return; // Found 2048, no need to check further
             }
         }
-    }
-    if (has2048) {
-        // Intentional Issue 2: Bad UX (using alert)
-        alert("You Win! You reached 2048!");
-        // Intentional Issue 1: Win message not cleared if player continues
     }
 }
 
@@ -257,10 +252,9 @@ runTest('should not trigger win condition if 2048 tile is not present', () => {
         [512, 1024, 0, 4096],
         [2, 4, 8, 16]
     ];
-    alertCalled = false;
-    alertMessage = '';
+    hasWon = false;
     checkWinCondition();
-    assert.strictEqual(alertCalled, false);
+    assert.strictEqual(hasWon, false);
 });
 
 runTest('should trigger win condition if 2048 tile is present', () => {
@@ -270,15 +264,11 @@ runTest('should trigger win condition if 2048 tile is present', () => {
         [512, 1024, 2048, 4096],
         [2, 4, 8, 16]
     ];
-    alertCalled = false;
-    alertMessage = '';
+    hasWon = false;
     checkWinCondition();
-    assert.strictEqual(alertCalled, true);
-    assert.strictEqual(alertMessage, "You Win! You reached 2048!");
+    assert.strictEqual(hasWon, true);
 });
 
-// Restore original alert to avoid interfering with other tests or console output
-global.alert = originalAlert;
-
 console.log('\nAll win condition logic tests passed!');
+
 

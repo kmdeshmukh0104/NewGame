@@ -3,16 +3,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const scoreElement = document.getElementById('current-score');
     const gameOverOverlay = document.getElementById('game-over-overlay');
     const restartButton = document.getElementById('restart-button');
+    const winOverlay = document.getElementById('win-overlay');
+    const continueButton = document.getElementById('continue-button');
     const gridSize = 4;
     let grid = [];
     let score = 0;
+    let hasWon = false;
 
     // Initialize the game
     function init() {
         grid = Array(gridSize).fill(null).map(() => Array(gridSize).fill(0));
         score = 0;
+        hasWon = false;
         updateScore();
         gameOverOverlay.classList.remove('visible');
+        winOverlay.classList.remove('visible');
         addRandomTile();
         addRandomTile();
         drawBoard();
@@ -252,26 +257,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Win Condition Logic ---
     function checkWinCondition() {
-        let has2048 = false;
+        if (hasWon) return; // Don't check again if already won
+
         for (let r = 0; r < gridSize; r++) {
             for (let c = 0; c < gridSize; c++) {
                 if (grid[r][c] === 2048) {
-                    has2048 = true;
-                    // Intentional Issue 3: Redundant check
-                    if (grid[r][c] === 2048) {
-                        // This check is redundant but serves as an intentional issue
-                    }
+                    hasWon = true;
+                    winOverlay.classList.add('visible');
+                    return; // Found 2048, no need to check further
                 }
             }
-        }
-        if (has2048) {
-            // Intentional Issue 2: Bad UX (using alert)
-            alert("You Win! You reached 2048!");
-            // Intentional Issue 1: Win message not cleared if player continues
         }
     }
 
     restartButton.addEventListener('click', init);
+    continueButton.addEventListener('click', () => {
+        winOverlay.classList.remove('visible');
+    });
     document.addEventListener('keydown', handleInput);
     init();
 });
