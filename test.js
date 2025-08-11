@@ -219,3 +219,56 @@ runTest('should be game over when the board is full and no merges are possible',
 
 console.log('\nAll game over logic tests passed!');
 
+// --- Win Condition Logic Tests ---
+
+let hasWon = false;
+
+// Mock winOverlay for testing
+const winOverlay = {
+    classList: {
+        add: () => {},
+        remove: () => {},
+    },
+};
+
+function checkWinCondition() {
+    if (hasWon) return; // Don't check again if already won
+
+    for (let r = 0; r < gridSize; r++) {
+        for (let c = 0; c < gridSize; c++) {
+            if (grid[r][c] === 2048) {
+                hasWon = true;
+                winOverlay.classList.add('visible');
+                return; // Found 2048, no need to check further
+            }
+        }
+    }
+}
+
+runTest('should not trigger win condition if 2048 tile is not present', () => {
+    grid = [
+        [2, 4, 8, 16],
+        [32, 64, 128, 256],
+        [512, 1024, 0, 4096],
+        [2, 4, 8, 16]
+    ];
+    hasWon = false;
+    checkWinCondition();
+    assert.strictEqual(hasWon, false);
+});
+
+runTest('should trigger win condition if 2048 tile is present', () => {
+    grid = [
+        [2, 4, 8, 16],
+        [32, 64, 128, 256],
+        [512, 1024, 2048, 4096],
+        [2, 4, 8, 16]
+    ];
+    hasWon = false;
+    checkWinCondition();
+    assert.strictEqual(hasWon, true);
+});
+
+console.log('\nAll win condition logic tests passed!');
+
+
