@@ -1,36 +1,100 @@
-.game-over-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(238, 228, 218, 0.73);
+body {
+    font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
+    background-color: #faf8ef;
+    color: #776e65;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-    text-align: center;
-    font-size: 60px;
+    height: 100vh;
+    margin: 0;
+}
+
+.game-container {
+    width: 500px;
+}
+
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.title {
+    font-size: 80px;
     font-weight: bold;
-    color: #776e65;
+    margin: 0;
+}
+
+.score-container {
+    display: flex;
+}
+
+.score, .best-score {
+    background-color: #bbada0;
+    color: #eee4da;
+    padding: 15px 25px;
+    border-radius: 3px;
+    text-align: center;
+    margin-left: 10px;
+}
+
+.score-title {
+    font-size: 13px;
+    display: block;
+    color: #eee4da;
+}
+
+#current-score, #best-score {
+    font-size: 25px;
+    font-weight: bold;
+    color: white;
+}
+
+.game-board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    gap: 15px;
+    background-color: #bbada0;
+    border: 15px solid #bbada0;
     border-radius: 6px;
-    visibility: hidden; /* Hidden by default */
-    opacity: 0;
-    transition: opacity 0.5s ease-in-out;
+    width: 100%;
+    height: 500px;
+    box-sizing: border-box;
 }
 
-.game-over-overlay.visible {
-    visibility: visible;
-    opacity: 1;
-}
-
-#restart-button {
-    font-size: 20px;
-    padding: 10px 20px;
-    margin-top: 20px;
-    cursor: pointer;
-    background-color: #8f7a66;
-    color: #f9f6f2;
-    border: none;
+.grid-cell {
+    background-color: #cdc1b4;
     border-radius: 3px;
 }
+
+.tile {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    font-weight: bold;
+    font-size: 55px;
+    border-radius: 3px;
+    color: #776e65; /* Default text color */
+    background-color: #eee4da; /* Default background */
+}
+
+/* Tile Colors */
+.tile-2 { background-color: #eee4da; }
+.tile-4 { background-color: #ede0c8; }
+.tile-8 { background-color: #f2b179; color: #f9f6f2; }
+.tile-16 { background-color: #f59563; color: #f9f6f2; }
+.tile-32 { background-color: #f67c5f; color: #f9f6f2; }
+.tile-64 { background-color: #f65e3b; color: #f9f6f2; }
+.tile-128 { background-color: #edcf72; color: #f9f6f2; font-size: 45px; }
+.tile-256 { background-color: #edcc61; color: #f9f6f2; font-size: 45px; }
+.tile-512 { background-color: #edc850; color: #f9f6f2; font-size: 45px; }
+.tile-1024 { background-color: #edc53f; color: #f9f6f2; font-size: 35px; }
+.tile-2048 { background-color: #edc22e; color: #f9f6f2; font-size: 35px; }
+
+/* Higher value tiles */
+.tile-4096 { background-color: #3c3a32; color: #f9f6f2; font-size: 35px; }
+.tile-8192 { background-color: #3c3a32; color: #f9f6f2; font-size: 35px; }

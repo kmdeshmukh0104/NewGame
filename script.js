@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize the game
     function init() {
+        console.log('init() called');
         grid = Array(gridSize).fill(null).map(() => Array(gridSize).fill(0));
         score = 0;
         updateScore();
@@ -20,6 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Draw the board based on the grid state
     function drawBoard() {
+        console.log('drawBoard() called');
+        console.log('Current grid state:', grid); // Add this line
         gameBoard.innerHTML = '';
         for (let r = 0; r < gridSize; r++) {
             for (let c = 0; c < gridSize; c++) {
@@ -40,6 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Add a random tile (2 or 4) to an empty cell
     function addRandomTile() {
+        console.log('addRandomTile() called');
         let emptyCells = [];
         for (let r = 0; r < gridSize; r++) {
             for (let c = 0; c < gridSize; c++) {
