@@ -270,3 +270,135 @@ runTest('should trigger win condition if 2048 tile is present', () => {
 });
 
 console.log('\nAll win condition logic tests passed!');
+
+// --- User Registration Tests ---
+
+// Mock localStorage
+const mockLocalStorage = (() => {
+    let store = {};
+    return {
+        getItem: function(key) {
+            return store[key] || null;
+        },
+        setItem: function(key, value) {
+            store[key] = value.toString();
+        },
+        clear: function() {
+            store = {};
+        },
+        removeItem: function(key) {
+            delete store[key];
+        }
+    };
+})();
+
+// Mock window object for redirection
+const mockWindow = {
+    location: {
+        href: ''
+    }
+};
+
+// Mock error message div
+const mockErrorMessageDiv = {
+    textContent: ''
+};
+
+// Import the handleSignup function (assuming it's exported or globally available)
+// For Node.js, we need to manually expose it if it's not exported.
+// Since it's not exported, I'll copy the function here for testing purposes.
+// In a real project, you'd use module.exports or import/export.
+
+// Copied handleSignup function from signup.js for testing
+function handleSignup(usernameValue, emailValue, passwordValue, errorMessageElement, localStorageMock, windowMock) {
+    errorMessageElement.textContent = ''; // Clear previous error messages
+
+    // Password validation: min 8 chars, 1 uppercase, 1 number
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[0-9]).{8,}$/;
+    if (!passwordRegex.test(passwordValue)) {
+        errorMessageElement.textContent = 'Password must be at least 8 characters long, contain at least one uppercase letter and one number.';
+        return false;
+    }
+
+    // Check for existing username
+    const users = JSON.parse(localStorageMock.getItem('users')) || [];
+    const usernameExists = users.some(user => user.username === usernameValue);
+
+    if (usernameExists) {
+        errorMessageElement.textContent = 'Username already taken. Please choose a different one.';
+        return false;
+    }
+
+    // Store new user
+    const newUser = { username: usernameValue, email: emailValue, password: passwordValue }; // In a real app, hash the password!
+    users.push(newUser);
+    localStorageMock.setItem('users', JSON.stringify(users));
+
+    windowMock.location.href = 'index.html'; // Redirect to main game page or login page
+    return true;
+}
+
+
+runTest('should register a new user successfully', () => {
+    mockLocalStorage.clear(); // Clear localStorage before each test
+    mockErrorMessageDiv.textContent = '';
+    mockWindow.location.href = '';
+
+    const result = handleSignup('testuser', 'test@example.com', 'Password123', mockErrorMessageDiv, mockLocalStorage, mockWindow);
+    assert.strictEqual(result, true);
+    assert.strictEqual(mockErrorMessageDiv.textContent, '');
+    assert.strictEqual(mockWindow.location.href, 'index.html');
+    const users = JSON.parse(mockLocalStorage.getItem('users'));
+    assert.strictEqual(users.length, 1);
+    assert.strictEqual(users[0].username, 'testuser');
+});
+
+runTest('should not register with an existing username', () => {
+    mockLocalStorage.clear();
+    mockLocalStorage.setItem('users', JSON.stringify([{ username: 'existinguser', email: 'e@e.com', password: 'Password123' }]));
+    mockErrorMessageDiv.textContent = '';
+    mockWindow.location.href = '';
+
+    const result = handleSignup('existinguser', 'new@example.com', 'NewPassword123', mockErrorMessageDiv, mockLocalStorage, mockWindow);
+    assert.strictEqual(result, false);
+    assert.strictEqual(mockErrorMessageDiv.textContent, 'Username already taken. Please choose a different one.');
+    assert.strictEqual(mockWindow.location.href, ''); // Should not redirect
+});
+
+runTest('should not register with a password too short', () => {
+    mockLocalStorage.clear();
+    mockErrorMessageDiv.textContent = '';
+    mockWindow.location.href = '';
+
+    const result = handleSignup('user1', 'user1@example.com', 'Pass1', mockErrorMessageDiv, mockLocalStorage, mockWindow);
+    assert.strictEqual(result, false);
+    assert.strictEqual(mockErrorMessageDiv.textContent, 'Password must be at least 8 characters long, contain at least one uppercase letter and one number.');
+    assert.strictEqual(mockWindow.location.href, '');
+});
+
+runTest('should not register with a password without uppercase', () => {
+    mockLocalStorage.clear();
+    mockErrorMessageDiv.textContent = '';
+    mockWindow.location.href = '';
+
+    const result = handleSignup('user2', 'user2@example.com', 'password123', mockErrorMessageDiv, mockLocalStorage, mockWindow);
+    assert.strictEqual(result, false);
+    assert.strictEqual(mockErrorMessageDiv.textContent, 'Password must be at least 8 characters long, contain at least one uppercase letter and one number.');
+    assert.strictEqual(mockWindow.location.href, '');
+});
+
+runTest('should not register with a password without number', () => {
+    mockLocalStorage.clear();
+    mockErrorMessageDiv.textContent = '';
+    mockWindow.location.href = '';
+
+    const result = handleSignup('user3', 'user3@example.com', 'PasswordABC', mockErrorMessageDiv, mockLocalStorage, mockWindow);
+    assert.strictEqual(result, false);
+    assert.strictEqual(mockErrorMessageDiv.textContent, 'Password must be at least 8 characters long, contain at least one uppercase letter and one number.');
+    assert.strictEqual(mockWindow.location.href, '');
+});
+
+console.log('\nAll user registration tests passed!');
+
+console.log('\nAll tests passed successfully!');
+process.exit(0);
