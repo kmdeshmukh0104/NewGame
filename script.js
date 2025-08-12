@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const gameBoard = document.getElementById('game-board');
     const scoreElement = document.getElementById('current-score');
     const gameOverOverlay = document.getElementById('game-over-overlay');
+    console.log('gameOverOverlay element:', gameOverOverlay);
     const restartButton = document.getElementById('restart-button');
     const gridSize = 4;
     let grid = [];
@@ -22,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Draw the board based on the grid state
     function drawBoard() {
         console.log('drawBoard() called');
-        console.log('Current grid state:', grid); // Add this line
+        console.log('Current grid state:', JSON.stringify(grid)); // Add this line
         gameBoard.innerHTML = '';
         for (let r = 0; r < gridSize; r++) {
             for (let c = 0; c < gridSize; c++) {
@@ -138,9 +139,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function moveRight() {
         let moved = false;
         for (let r = 0; r < gridSize; r++) {
-            const row = grid[r].reverse();
+            const row = grid[r].slice().reverse();
             const newRow = slide(row).reverse();
-            if (grid[r].reverse().join(',') !== newRow.join(',')) {
+            if (grid[r].join(',') !== newRow.join(',')) {
                 moved = true;
             }
             grid[r] = newRow;
