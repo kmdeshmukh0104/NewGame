@@ -74,4 +74,74 @@ runTest('should handle a full row with no merges', () => {
     assert.strictEqual(score, 0);
 });
 
-console.log('\nAll logic tests passed!');
+console.log('\nAll slide logic tests passed!');
+
+// --- Swipe Handling Tests ---
+
+// Mock the movement functions
+let lastMoveCalled = null;
+const moveUp = () => { lastMoveCalled = 'up'; return true; };
+const moveDown = () => { lastMoveCalled = 'down'; return true; };
+const moveLeft = () => { lastMoveCalled = 'left'; return true; };
+const moveRight = () => { lastMoveCalled = 'right'; return true; };
+
+function handleSwipe(touchStartX, touchStartY, touchEndX, touchEndY) {
+    const deltaX = touchEndX - touchStartX;
+    const deltaY = touchEndY - touchStartY;
+    const swipeThreshold = 50; // Minimum distance for a swipe
+
+    let moved = false;
+    lastMoveCalled = null;
+
+    if (Math.abs(deltaX) > Math.abs(deltaY)) { // Horizontal swipe
+        if (Math.abs(deltaX) > swipeThreshold) {
+            if (deltaX > 0) {
+                moved = moveRight();
+            } else {
+                moved = moveLeft();
+            }
+        }
+    } else { // Vertical swipe
+        if (Math.abs(deltaY) > swipeThreshold) {
+            if (deltaY > 0) {
+                moved = moveDown();
+            } else {
+                moved = moveUp();
+            }
+        }
+    }
+    return moved;
+}
+
+runTest('should detect a swipe right', () => {
+    handleSwipe(100, 100, 200, 100);
+    assert.strictEqual(lastMoveCalled, 'right');
+});
+
+runTest('should detect a swipe left', () => {
+    handleSwipe(200, 100, 100, 100);
+    assert.strictEqual(lastMoveCalled, 'left');
+});
+
+runTest('should detect a swipe up', () => {
+    handleSwipe(100, 200, 100, 100);
+    assert.strictEqual(lastMoveCalled, 'up');
+});
+
+runTest('should detect a swipe down', () => {
+    handleSwipe(100, 100, 100, 200);
+    assert.strictEqual(lastMoveCalled, 'down');
+});
+
+runTest('should ignore a swipe that is too short', () => {
+    handleSwipe(100, 100, 110, 110);
+    assert.strictEqual(lastMoveCalled, null);
+});
+
+runTest('should ignore a diagonal swipe that is too short', () => {
+    handleSwipe(100, 100, 140, 140); // deltaX=40, deltaY=40
+    assert.strictEqual(lastMoveCalled, null);
+});
+
+console.log('\nAll swipe handling tests passed!');
+
