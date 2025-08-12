@@ -4,17 +4,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const gameOverOverlay = document.getElementById('game-over-overlay');
     console.log('gameOverOverlay element:', gameOverOverlay);
     const restartButton = document.getElementById('restart-button');
+    const winOverlay = document.getElementById('win-overlay');
+    const continueButton = document.getElementById('continue-button');
     const gridSize = 4;
     let grid = [];
     let score = 0;
+    let hasWon = false;
 
     // Initialize the game
     function init() {
         console.log('init() called');
         grid = Array(gridSize).fill(null).map(() => Array(gridSize).fill(0));
         score = 0;
+        hasWon = false;
         updateScore();
         gameOverOverlay.classList.remove('visible');
+        winOverlay.classList.remove('visible');
         addRandomTile();
         addRandomTile();
         drawBoard();
@@ -82,6 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
             addRandomTile();
             drawBoard();
             checkGameOver();
+            checkWinCondition();
         }
     }
 
@@ -216,6 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
             addRandomTile();
             drawBoard();
             checkGameOver();
+            checkWinCondition();
         }
     }
 
@@ -254,7 +261,25 @@ document.addEventListener('DOMContentLoaded', () => {
         return true; // It's game over
     }
 
+    // --- Win Condition Logic ---
+    function checkWinCondition() {
+        if (hasWon) return; // Don't check again if already won
+
+        for (let r = 0; r < gridSize; r++) {
+            for (let c = 0; c < gridSize; c++) {
+                if (grid[r][c] === 2048) {
+                    hasWon = true;
+                    winOverlay.classList.add('visible');
+                    return; // Found 2048, no need to check further
+                }
+            }
+        }
+    }
+
     restartButton.addEventListener('click', init);
+    continueButton.addEventListener('click', () => {
+        winOverlay.classList.remove('visible');
+    });
     document.addEventListener('keydown', handleInput);
     init();
 });
